@@ -5,13 +5,25 @@ import  json
 from flask import  Flask , jsonify
 from flask import request
 
+from pymongo import  MongoClient
+
+
+
+
+
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
-from databaseConnection import  getDatabase
+
+def getDatabase():
+
+    connectionString = "mongodb+srv://Restro-sentiment:yiZnSt5OYbOTULcU@cluster0.pwozgdd.mongodb.net/?retryWrites=true&w=majority"
+    client = MongoClient(connectionString)
+
+    return  client['Restro-sentiment']
 
 dbName = getDatabase()
 
