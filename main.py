@@ -15,10 +15,6 @@ from databaseConnection import  getDatabase
 
 dbName = getDatabase()
 
-collectionName = dbName["review"]
-item_details = collectionName.find({"RestraurentId" :  " 635d80f94627b3e2d3cb83b2"})
-for item in item_details:
-    print(item)
 
 
 def reviewPrediction (sentimentArray):
@@ -55,12 +51,23 @@ def helloWorld():
     return 'Hello World'
 
 
-@app.route('/reviewAnalysis' )
-def reviewAnalysis():
+@app.route('/reviewAnalysis/<string:id>')
+def reviewAnalysis(id: str):
+    reviewItem = []
+    collectionName = dbName["review"]
+    item_details = collectionName.find({"RestraurentId": id})
+    print(item_details)
+    for item in item_details:
+        reviewItem.append(item)
 
 
+    reviewList = []
 
-    predictonArray = reviewPrediction(["worst kacchi ever." , "love this burger" , "not good kacchi","best Burger Ever"," they provide expired and waste food.", "10/10 kacchi" , "9.5/10 kacchi"])
+    for item in reviewItem:
+        reviewList.append(item['review'])
+
+
+    predictonArray = reviewPrediction(reviewList)
     predictArrayLength = len(predictonArray)
     satisfiedCase = []
 
@@ -72,6 +79,9 @@ def reviewAnalysis():
 
 
     satisfactionRatio = int((satisfiedCaselenth/predictArrayLength)*100)
+
+    if len(reviewList)==0:
+        satisfactionRatio = 0
 
     sendingData = { "Satisfaction" : satisfactionRatio}
 
